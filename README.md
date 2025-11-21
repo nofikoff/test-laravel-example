@@ -100,3 +100,13 @@ docker-compose exec app php artisan test
 - OpenAI API (gpt-4o-mini)
 - Tailwind CSS
 - Docker & Docker Compose
+
+
+## Screenshots
+  
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/8dbf3892-406a-4183-a911-f21436ae88b7" />
+
+<img width="907" height="616" alt="image" src="https://github.com/user-attachments/assets/8d46cf38-1dee-4dc4-a350-fe572f8d72fc" />
+
+  
+
