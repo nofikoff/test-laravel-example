@@ -108,5 +108,8 @@ docker-compose exec app php artisan test
 
 <img width="907" height="616" alt="image" src="https://github.com/user-attachments/assets/8d46cf38-1dee-4dc4-a350-fe572f8d72fc" />
 
+<img width="772" height="389" alt="image" src="https://github.com/user-attachments/assets/555eaf61-bf61-4a1e-aa6e-e209ff2a0eb3" />
+
+
   
 
