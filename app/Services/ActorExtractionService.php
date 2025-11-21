@@ -2,48 +2,59 @@
 
 namespace App\Services;
 
+use App\Contracts\AIServiceInterface;
+use App\Services\Transformers\ActorDataTransformer;
+
+/**
+ * Service for extracting actor information from natural language descriptions.
+ *
+ * Orchestrates the process of AI extraction and data transformation.
+ * Validation is handled at the request level through Laravel validation rules.
+ */
 class ActorExtractionService
 {
-    public function extractActorData(string $description): array
+    /**
+     * Create a new actor extraction service instance.
+     *
+     * @param AIServiceInterface $aiService Service for AI-powered data extraction
+     * @param ActorDataTransformer $transformer Transformer for data format conversion
+     */
+    public function __construct(
+        private readonly AIServiceInterface $aiService,
+        private readonly ActorDataTransformer $transformer
+    ) {}
+
+    /**
+     * Extract raw actor data from natural language description without transformation.
+     *
+     * Returns data in AI format (camelCase). Useful for validation purposes.
+     *
+     * @param string $description Natural language description of the actor
+     * @return array<string, mixed> Raw extracted data in AI format
+     *
+     */
+    public function extractRawActorData(string $description): array
     {
         $prompt = config('ai.actor_extraction_prompt');
 
-        $client = \OpenAI::factory()
-            ->withApiKey(config('openai.api_key'))
-            ->make();
+        return $this->aiService->extractStructuredData($prompt, $description);
+    }
 
-        $response = $client->chat()->create([
-            'model' => 'gpt-4o-mini',
-            'messages' => [
-                [
-                    'role' => 'system',
-                    'content' => $prompt,
-                ],
-                [
-                    'role' => 'user',
-                    'content' => $description,
-                ],
-            ],
-            'response_format' => [
-                'type' => 'json_object',
-            ],
-        ]);
+    /**
+     * Extract structured actor data from natural language description.
+     *
+     * Uses AI to parse the description and transforms the data into database-ready format.
+     * Note: Validation should be performed separately before calling this method.
+     *
+     * @param string $description Natural language description of the actor
+     * @return array<string, mixed> Extracted and transformed actor data
+     *
+     * @used-by \Tests\Unit\Services\ActorExtractionServiceTest
+     */
+    public function extractActorData(string $description): array
+    {
+        $rawData = $this->extractRawActorData($description);
 
-        $content = $response->choices[0]->message->content;
-        $data = json_decode($content, true);
-
-        if (!isset($data['firstName']) || !isset($data['lastName']) || !isset($data['address'])) {
-            throw new \Exception(__('messages.missing_required_fields'));
-        }
-
-        return [
-            'first_name' => $data['firstName'],
-            'last_name' => $data['lastName'],
-            'address' => $data['address'],
-            'height' => $data['height'] ?? null,
-            'weight' => $data['weight'] ?? null,
-            'gender' => $data['gender'] ?? null,
-            'age' => $data['age'] ?? null,
-        ];
+        return $this->transformer->transform($rawData);
     }
 }

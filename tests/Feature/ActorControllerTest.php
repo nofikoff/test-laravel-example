@@ -23,18 +23,20 @@ class ActorControllerTest extends TestCase
     public function test_stores_actor_successfully(): void
     {
         $extractionService = $this->mock(ActorExtractionService::class);
-        $extractionService->shouldReceive('extractActorData')
+
+        $rawData = [
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'address' => '123 Main St',
+            'height' => '180cm',
+            'weight' => '75kg',
+            'gender' => 'male',
+            'age' => 30,
+        ];
+
+        $extractionService->shouldReceive('extractRawActorData')
             ->once()
-            ->with('John Doe is 30 years old and lives at 123 Main St')
-            ->andReturn([
-                'first_name' => 'John',
-                'last_name' => 'Doe',
-                'address' => '123 Main St',
-                'height' => '180cm',
-                'weight' => '75kg',
-                'gender' => 'male',
-                'age' => 30,
-            ]);
+            ->andReturn($rawData);
 
         $response = $this->post(route('actors.store'), [
             'email' => 'john@example.com',
@@ -86,7 +88,7 @@ class ActorControllerTest extends TestCase
     public function test_handles_extraction_service_exception(): void
     {
         $extractionService = $this->mock(ActorExtractionService::class);
-        $extractionService->shouldReceive('extractActorData')
+        $extractionService->shouldReceive('extractRawActorData')
             ->once()
             ->andThrow(new \Exception('Missing required fields'));
 

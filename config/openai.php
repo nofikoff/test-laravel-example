@@ -14,6 +14,15 @@ return [
 
     'api_key' => env('OPENAI_API_KEY'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | OpenAI Model
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify which OpenAI model to use for chat completions.
+    | Common options: gpt-4o, gpt-4o-mini, gpt-4-turbo, gpt-3.5-turbo
+    */
+    'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
 
     /*
     |--------------------------------------------------------------------------
