@@ -14,9 +14,10 @@ echo "Running migrations..."
 php artisan migrate --force
 
 echo "Setting permissions..."
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 echo "Starting application..."
 echo "Access at: http://localhost"
 
-php artisan serve --host=0.0.0.0 --port=80
+su -s /bin/bash www-data -c "php artisan serve --host=0.0.0.0 --port=80"
