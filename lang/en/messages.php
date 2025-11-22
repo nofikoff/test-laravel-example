@@ -1,6 +1,5 @@
 <?php
 
-/** @return array<string, string> */
 return [
     'actor_created' => 'Actor information has been successfully saved.',
     'missing_required_fields' => 'Please add first name, last name, and address to your description.',
@@ -11,6 +10,7 @@ return [
     'email_label' => 'Email',
     'description_label' => 'Actor Description',
     'actors_table_title' => 'All Submissions',
+    'submit_actor_title' => 'Submit Actor Information',
     'first_name' => 'First Name',
     'last_name' => 'Last Name',
     'email' => 'Email',
@@ -21,4 +21,7 @@ return [
     'age' => 'Age',
     'submitted' => 'Submitted',
     'no_actors' => 'No actors submitted yet.',
+    'nav_submission_form' => 'Submission Form',
+    'nav_all_submissions' => 'All Submissions',
+    'nav_prompt_ai' => 'Prompt AI',
 ];

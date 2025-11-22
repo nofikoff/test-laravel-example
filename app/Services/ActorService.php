@@ -4,13 +4,13 @@ namespace App\Services;
 
 use App\DataTransferObjects\ActorData;
 use App\Exceptions\ActorExtractionException;
+use App\Exceptions\ActorValidationException;
+use App\Exceptions\AIServiceException;
+use App\Exceptions\DataTransformationException;
 use App\Models\Actor;
 use App\Services\Transformers\ActorDataTransformer;
 use App\Services\Validators\ActorDataValidator;
 
-/**
- * Service for handling actor business logic.
- */
 class ActorService
 {
     public function __construct(
@@ -19,38 +19,33 @@ class ActorService
         private readonly ActorDataTransformer $transformer
     ) {}
 
-    /**
-     * Create actor from description and email.
-     *
-     * @param string $description
-     * @param string $email
-     * @return Actor
-     * @throws ActorExtractionException
-     */
-    public function createFromDescription(string $description, string $email): Actor
+    public function createFromDescription(string $description, string $email, ?array $cachedData = null): Actor
     {
-        $actorData = $this->extractActorData($description, $email);
-
+        $actorData = $this->extractActorData($description, $email, $cachedData);
         return Actor::create($actorData->toArray());
     }
 
+    public function getAllActors(int $perPage = 15)
+    {
+        return Actor::latest()->paginate($perPage);
+    }
+
     /**
-     * Extract and validate actor data from description.
-     *
-     * @param string $description
-     * @param string $email
-     * @return ActorData
-     * @throws ActorExtractionException
+     * Uses cached data if available to avoid duplicate AI calls.
      */
-    public function extractActorData(string $description, string $email): ActorData
+    private function extractActorData(string $description, string $email, ?array $cachedData = null): ActorData
     {
         try {
-            $rawData = $this->extractionService->extractRawActorData($description);
-            $this->validator->validate($rawData);
+            $rawData = $cachedData ?? $this->extractionService->extractRawActorData($description);
+
+            if ($cachedData === null) {
+                $this->validator->validate($rawData);
+            }
+
             $transformedData = $this->transformer->transform($rawData, $email);
 
             return ActorData::fromArray($transformedData);
-        } catch (\Exception $e) {
+        } catch (AIServiceException|ActorValidationException|DataTransformationException $e) {
             throw new ActorExtractionException(
                 "Failed to extract actor data: {$e->getMessage()}",
                 previous: $e

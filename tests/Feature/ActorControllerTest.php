@@ -35,6 +35,7 @@ class ActorControllerTest extends TestCase
             'age' => 30,
         ];
 
+        // Called once during validation, cached data is reused in service
         $extractionService->shouldReceive('extractRawActorData')
             ->once()
             ->andReturn($rawData);

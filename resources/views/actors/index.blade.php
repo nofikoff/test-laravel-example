@@ -50,6 +50,10 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="mt-4">
+            {{ $actors->links() }}
+        </div>
     @endif
 </div>
 @endsection

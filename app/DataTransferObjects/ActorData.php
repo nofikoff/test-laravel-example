@@ -4,19 +4,6 @@ namespace App\DataTransferObjects;
 
 class ActorData
 {
-    /**
-     * Create a new ActorData instance.
-     *
-     * @param string $firstName
-     * @param string $lastName
-     * @param string $address
-     * @param string $email
-     * @param string $description
-     * @param int|null $age
-     * @param string|null $gender
-     * @param string|null $height
-     * @param string|null $weight
-     */
     public function __construct(
         public readonly string $firstName,
         public readonly string $lastName,
@@ -29,12 +16,6 @@ class ActorData
         public readonly ?string $weight = null
     ) {}
 
-    /**
-     * Create from array.
-     *
-     * @param array<string, mixed> $data
-     * @return self
-     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -50,11 +31,6 @@ class ActorData
         );
     }
 
-    /**
-     * Convert to array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(): array
     {
         return [

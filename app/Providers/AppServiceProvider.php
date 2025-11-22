@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\ActorDataCache;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +12,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register actor data cache as singleton to prevent duplicate AI calls
+        $this->app->singleton(ActorDataCache::class);
     }
 
     /**

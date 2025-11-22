@@ -5,24 +5,10 @@ namespace App\Services\Transformers;
 use App\Exceptions\DataTransformationException;
 
 /**
- * Transformer for actor data from AI format to database format.
- *
- * Converts camelCase field names from AI response to snake_case
- * database column names and handles optional fields.
+ * Converts AI response (camelCase) to database format (snake_case).
  */
 class ActorDataTransformer
 {
-    /**
-     * Transform AI response data to database format.
-     *
-     * Converts field names from camelCase (AI format) to snake_case (database format).
-     * Optional fields default to null if not present in the AI response.
-     *
-     * @param array<string, mixed> $aiData The data from AI service (camelCase format)
-     * @param string $email Email from user input
-     * @return array<string, mixed> The transformed data ready for database (snake_case format)
-     * @throws DataTransformationException
-     */
     public function transform(array $aiData, string $email): array
     {
         try {
@@ -49,13 +35,6 @@ class ActorDataTransformer
         }
     }
 
-    /**
-     * Validate required fields are present.
-     *
-     * @param array<string, mixed> $data
-     * @return void
-     * @throws DataTransformationException
-     */
     private function validateRequiredFields(array $data): void
     {
         if (!isset($data['firstName'])) {
@@ -71,12 +50,6 @@ class ActorDataTransformer
         }
     }
 
-    /**
-     * Generate description from address.
-     *
-     * @param array<string, mixed> $data
-     * @return string
-     */
     private function generateDescription(array $data): string
     {
         $parts = [];

@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreActorRequest;
 use App\Http\Resources\ActorResource;
-use App\Models\Actor;
+use App\Services\ActorDataCache;
 use App\Services\ActorService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\View\View;
@@ -13,7 +14,8 @@ use Illuminate\View\View;
 class ActorController extends Controller
 {
     public function __construct(
-        private readonly ActorService $actorService
+        private readonly ActorService $actorService,
+        private readonly ActorDataCache $cache
     ) {}
 
     public function create(): View
@@ -21,11 +23,15 @@ class ActorController extends Controller
         return view('actors.create');
     }
 
+    /**
+     * Uses cached AI extraction result from validation to avoid duplicate API calls.
+     */
     public function store(StoreActorRequest $request): RedirectResponse
     {
         $this->actorService->createFromDescription(
-            $request->description,
-            $request->email
+            $request->validated('description'),
+            $request->validated('email'),
+            $this->cache->get()
         );
 
         return redirect()->route('actors.index')
@@ -34,27 +40,30 @@ class ActorController extends Controller
 
     public function index(): View
     {
-        $actors = Actor::latest()->get();
-
-        return view('actors.index', compact('actors'));
+        return view('actors.index', [
+            'actors' => $this->actorService->getAllActors()
+        ]);
     }
 
     public function api(): AnonymousResourceCollection
     {
-        $actors = Actor::latest()->get();
-
-        return ActorResource::collection($actors);
+        return ActorResource::collection(
+            $this->actorService->getAllActors(20)
+        );
     }
 
     public function showPrompt(): View
     {
-        $prompt = config('ai.actor_extraction_prompt');
-        $apiUrl = route('api.v1.actors.prompt');
-
-        return view('actors.prompt', compact('prompt', 'apiUrl'));
+        return view('actors.prompt', [
+            'prompt' => config('ai.actor_extraction_prompt'),
+            'apiUrl' => route('api.v1.actors.prompt')
+        ]);
     }
 
-    public function getPrompt(): \Illuminate\Http\JsonResponse
+    /**
+     * Client requirement: exposes AI prompt for transparency.
+     */
+    public function getPrompt(): JsonResponse
     {
         return response()->json([
             'message' => config('ai.actor_extraction_prompt'),

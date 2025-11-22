@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="card">
-    <h1 class="card-title">Submit Actor Information</h1>
+    <h1 class="card-title">{{ __('messages.submit_actor_title') }}</h1>
 
     <form action="{{ route('actors.store') }}" method="POST" class="form">
         @csrf

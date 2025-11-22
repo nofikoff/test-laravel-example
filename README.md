@@ -64,6 +64,8 @@ curl http://localhost/api/v1/actors/prompt-validation
 }
 ```
 
+**Note:** The `/api/v1/actors/prompt-validation` endpoint is a client requirement. It provides transparency by exposing the AI extraction prompt used for validation. This allows clients to understand what data the system expects and how it processes descriptions.
+
 ## Docker Commands
 
 ```bash
