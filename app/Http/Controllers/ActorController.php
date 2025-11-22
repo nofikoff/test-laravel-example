@@ -28,9 +28,11 @@ class ActorController extends Controller
      */
     public function store(StoreActorRequest $request): RedirectResponse
     {
+        $validated = $request->validated();
+
         $this->actorService->createFromDescription(
-            $request->validated('description'),
-            $request->validated('email'),
+            $validated['description'],
+            $validated['email'],
             $this->cache->get()
         );
 
