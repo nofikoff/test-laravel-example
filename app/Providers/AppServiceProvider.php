@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Contracts\AIServiceInterface;
-use App\Services\AI\OpenAIService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,12 +11,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(AIServiceInterface::class, function () {
-            return new OpenAIService(
-                apiKey: config('openai.api_key'),
-                model: config('openai.model', 'gpt-4o-mini')
-            );
-        });
+        //
     }
 
     /**

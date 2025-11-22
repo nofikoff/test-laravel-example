@@ -49,11 +49,12 @@ class ActorExtractionServiceTest extends TestCase
             ->once()
             ->andReturn($aiResponse);
 
-        $result = $this->service->extractActorData($description);
+        $result = $this->service->extractActorData($description, 'john@example.com');
 
         $this->assertEquals('John', $result['first_name']);
         $this->assertEquals('Doe', $result['last_name']);
         $this->assertEquals('123 Main St', $result['address']);
+        $this->assertEquals('john@example.com', $result['email']);
         $this->assertEquals(30, $result['age']);
     }
 
@@ -76,11 +77,12 @@ class ActorExtractionServiceTest extends TestCase
             ->once()
             ->andReturn($aiResponse);
 
-        $result = $this->service->extractActorData($description);
+        $result = $this->service->extractActorData($description, 'jane@example.com');
 
         $this->assertEquals('Jane', $result['first_name']);
         $this->assertEquals('Smith', $result['last_name']);
         $this->assertEquals('456 Oak Ave', $result['address']);
+        $this->assertEquals('jane@example.com', $result['email']);
         $this->assertEquals('165cm', $result['height']);
         $this->assertEquals('55kg', $result['weight']);
         $this->assertEquals('female', $result['gender']);
@@ -102,11 +104,12 @@ class ActorExtractionServiceTest extends TestCase
             ->once()
             ->andReturn($aiResponse);
 
-        $result = $this->service->extractActorData($description);
+        $result = $this->service->extractActorData($description, 'bob@example.com');
 
         $this->assertEquals('Bob', $result['first_name']);
         $this->assertEquals('Brown', $result['last_name']);
         $this->assertEquals('789 Pine Rd', $result['address']);
+        $this->assertEquals('bob@example.com', $result['email']);
         $this->assertNull($result['height']);
         $this->assertNull($result['weight']);
         $this->assertNull($result['gender']);
@@ -130,7 +133,7 @@ class ActorExtractionServiceTest extends TestCase
             ->with($expectedPrompt, $description)
             ->andReturn($aiResponse);
 
-        $result = $this->service->extractActorData($description);
+        $result = $this->service->extractActorData($description, 'test@example.com');
 
         $this->assertNotEmpty($result);
     }

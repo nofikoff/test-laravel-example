@@ -47,14 +47,15 @@ class ActorExtractionService
      * Note: Validation should be performed separately before calling this method.
      *
      * @param string $description Natural language description of the actor
+     * @param string $email Email from user input
      * @return array<string, mixed> Extracted and transformed actor data
      *
      * @used-by \Tests\Unit\Services\ActorExtractionServiceTest
      */
-    public function extractActorData(string $description): array
+    public function extractActorData(string $description, string $email): array
     {
         $rawData = $this->extractRawActorData($description);
 
-        return $this->transformer->transform($rawData);
+        return $this->transformer->transform($rawData, $email);
     }
 }

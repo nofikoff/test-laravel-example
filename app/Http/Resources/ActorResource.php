@@ -20,6 +20,7 @@ class ActorResource extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'address' => $this->address,
+            'description' => $this->description,
             'height' => $this->height,
             'weight' => $this->weight,
             'gender' => $this->gender,

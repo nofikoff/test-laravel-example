@@ -47,7 +47,22 @@ The application will automatically:
 - **Submit Form**: Navigate to `http://localhost` to access the submission form
 - **View Submissions**: Navigate to `http://localhost/actors` to view all submissions
 - **phpMyAdmin**: Navigate to `http://localhost:8080` to manage the MySQL database
-- **API Endpoint**: `GET /api/actors/prompt-validation` returns the OpenAI prompt used for data extraction
+
+### API Endpoints
+
+- **Get All Actors**: `GET http://localhost/api/v1/actors` - Returns a JSON list of all actors
+- **Get AI Prompt**: `GET http://localhost/api/v1/actors/prompt-validation` - Returns the OpenAI prompt used for data extraction
+
+**Example:**
+```bash
+# Get AI prompt
+curl http://localhost/api/v1/actors/prompt-validation
+
+# Response:
+{
+  "message": "Extract actor information from the user description. Return JSON with fields: firstName, lastName, address, height, weight, gender, age. If a field is not mentioned in the description, set it to null. firstName, lastName, and address are REQUIRED fields."
+}
+```
 
 ## Docker Commands
 

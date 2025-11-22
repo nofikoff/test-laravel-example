@@ -2,6 +2,8 @@
 
 namespace App\Services\Validators;
 
+use App\Exceptions\ActorValidationException;
+
 /**
  * Validator for actor data extracted from AI.
  *
@@ -10,24 +12,25 @@ namespace App\Services\Validators;
  */
 class ActorDataValidator
 {
+    /** @var array<int, string> */
+    private const REQUIRED_FIELDS = ['firstName', 'lastName', 'address'];
+
     /**
      * Validate that required actor fields are present in the data.
      *
      * @param array<string, mixed> $data The data to validate
      * @return void
-     * @throws \Exception If required fields are missing
+     * @throws ActorValidationException If required fields are missing
      */
     public function validate(array $data): void
     {
-        $requiredFields = ['firstName', 'lastName', 'address'];
-
         $missingFields = array_filter(
-            $requiredFields,
+            self::REQUIRED_FIELDS,
             fn($field) => !isset($data[$field]) || empty($data[$field])
         );
 
         if (!empty($missingFields)) {
-            throw new \Exception(__('messages.missing_required_fields'));
+            throw ActorValidationException::missingRequiredFields($missingFields);
         }
     }
 
@@ -38,6 +41,7 @@ class ActorDataValidator
      */
     public function getRequiredFields(): array
     {
-        return ['firstName', 'lastName', 'address'];
+        return self::REQUIRED_FIELDS;
     }
 }
+

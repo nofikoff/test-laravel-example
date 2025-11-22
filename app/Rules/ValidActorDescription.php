@@ -2,26 +2,26 @@
 
 namespace App\Rules;
 
+use App\Exceptions\ActorExtractionException;
+use App\Exceptions\ActorValidationException;
+use App\Exceptions\AIServiceException;
+use App\Exceptions\DataTransformationException;
 use App\Services\ActorExtractionService;
 use App\Services\Validators\ActorDataValidator;
-use App\Services\Transformers\ActorDataTransformer;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 /**
- * Validation rule for actor description that can be extracted by AI.
+ * Validation rule for actor description.
  *
  * Validates that the description contains sufficient information
- * for AI to extract required actor fields (firstName, lastName, address).
+ * for AI to extract required actor fields without side effects.
  */
 class ValidActorDescription implements ValidationRule
 {
-    private ?array $extractedData = null;
-
     public function __construct(
         private readonly ActorExtractionService $extractionService,
-        private readonly ActorDataValidator $validator,
-        private readonly ActorDataTransformer $transformer
+        private readonly ActorDataValidator $validator
     ) {}
 
     /**
@@ -31,22 +31,9 @@ class ValidActorDescription implements ValidationRule
     {
         try {
             $rawData = $this->extractionService->extractRawActorData($value);
-
             $this->validator->validate($rawData);
-
-            $this->extractedData = $this->transformer->transform($rawData);
-        } catch (\Exception $e) {
+        } catch (ActorExtractionException|ActorValidationException|AIServiceException|DataTransformationException $e) {
             $fail($e->getMessage());
         }
-    }
-
-    /**
-     * Get the extracted actor data after successful validation.
-     *
-     * @return array<string, mixed>|null
-     */
-    public function getExtractedData(): ?array
-    {
-        return $this->extractedData;
     }
 }

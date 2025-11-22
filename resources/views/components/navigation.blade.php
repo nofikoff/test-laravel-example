@@ -9,6 +9,10 @@
                class="nav-link {{ request()->routeIs('actors.index') ? 'nav-link-active' : 'nav-link-inactive' }}">
                 All Submissions
             </a>
+            <a href="{{ route('actors.prompt') }}"
+               class="nav-link {{ request()->routeIs('actors.prompt') ? 'nav-link-active' : 'nav-link-inactive' }}">
+                Prompt AI
+            </a>
         </div>
     </div>
 </nav>

@@ -7,7 +7,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreActorRequest extends FormRequest
 {
-    private ?ValidActorDescription $validActorRule = null;
+    public function __construct(
+        private readonly ValidActorDescription $validActorRule
+    ) {
+        parent::__construct();
+    }
 
     /**
      * Determine if the user is authorized to make this request.
@@ -17,23 +21,16 @@ class StoreActorRequest extends FormRequest
         return true;
     }
 
+    /**
+     * Get validation rules.
+     *
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
-        $this->validActorRule = app(ValidActorDescription::class);
-
         return [
             'email' => ['required', 'email', 'unique:actors,email'],
             'description' => ['required', 'string', 'unique:actors,description', $this->validActorRule],
         ];
-    }
-
-    /**
-     * Get the extracted actor data from AI.
-     *
-     * @return array<string, mixed>
-     */
-    public function getExtractedActorData(): array
-    {
-        return $this->validActorRule?->getExtractedData() ?? [];
     }
 }
